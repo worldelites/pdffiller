@@ -105,13 +105,17 @@
             });
         },
 
-        fillForm: function( sourceFile, destinationFile, fieldValues, callback ) {
+        fillForm: function( sourceFile, destinationFile, fieldValues, flatten, callback ) {
 
             //Generate the data from the field values.
             var tempFDF = "data" + (new Date().getTime()) + ".fdf",
                 formData = fdf.generator( fieldValues, tempFDF );
 
-            child_process.exec( "pdftk " + sourceFile + " fill_form " + tempFDF + " output " + destinationFile + " flatten", function (error, stdout, stderr) {
+            var cmd = "pdftk " + sourceFile + " fill_form " + tempFDF + " output " + destinationFile;
+            if (flatten) {
+              cmd += " flatten";
+            }
+            child_process.exec(cmd, function (error, stdout, stderr) {
 
                 if ( error ) {
                     console.log('exec error: ' + error);
